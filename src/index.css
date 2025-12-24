@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@700&display=swap');
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 0 75% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 40% 95%;
+    --secondary-foreground: 0 75% 35%;
+
+    --muted: 0 20% 96%;
+    --muted-foreground: 0 10% 45%;
+
+    --accent: 0 50% 92%;
+    --accent-foreground: 0 75% 35%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 30% 85%;
+    --input: 0 30% 85%;
+    --ring: 0 75% 45%;
+
+    --radius: 0.25rem;
+
+    --invoice-header: 0 50% 95%;
+    --invoice-border: 0 75% 45%;
+    --invoice-text: 0 75% 40%;
+
+    --font-heading: 'Roboto Condensed', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 70% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 30% 20%;
+    --secondary-foreground: 0 50% 80%;
+
+    --muted: 0 20% 18%;
+    --muted-foreground: 0 10% 65%;
+
+    --accent: 0 30% 22%;
+    --accent-foreground: 0 50% 80%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 20% 25%;
+    --input: 0 20% 25%;
+    --ring: 0 70% 50%;
+
+    --invoice-header: 0 30% 18%;
+    --invoice-border: 0 70% 50%;
+    --invoice-text: 0 60% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer components {
+  .invoice-container {
+    @apply bg-card shadow-lg max-w-4xl mx-auto;
+  }
+
+  .invoice-header {
+    @apply bg-accent text-accent-foreground py-4 px-6 text-center;
+  }
+
+  .invoice-title {
+    @apply text-4xl font-bold tracking-wider text-primary;
+    font-family: var(--font-heading);
+  }
+
+  .invoice-section {
+    @apply border border-primary/30 p-3;
+  }
+
+  .invoice-label {
+    @apply text-primary font-medium text-sm;
+  }
+
+  .invoice-input {
+    @apply border-b border-primary/40 bg-transparent outline-none px-1 py-0.5 text-foreground w-full;
+  }
+
+  .invoice-table {
+    @apply w-full border-collapse;
+  }
+
+  .invoice-table th {
+    @apply bg-accent text-primary font-medium text-sm py-2 px-3 border border-primary/30;
+  }
+
+  .invoice-table td {
+    @apply py-2 px-3 border border-primary/30;
+  }
+
+  .invoice-table input {
+    @apply bg-transparent outline-none w-full text-center;
+  }
+
+  .tax-row {
+    @apply flex items-center justify-between py-1 border-b border-primary/20;
+  }
+
+  .bank-box {
+    @apply border border-primary/30 p-3;
+  }
+
+  .signature-line {
+    @apply border-t border-primary mt-8 pt-2 text-center;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Hide all toasts and notifications during print */
+  [data-sonner-toaster],
+  [data-sonner-toast],
+  .sonner-toast,
+  [role="status"],
+  .toaster {
+    display: none !important;
+  }
+
+  .invoice-container {
+    box-shadow: none !important;
+    max-width: 100% !important;
+  }
+
+  .invoice-input {
+    border-bottom: 1px solid hsl(0 75% 45% / 0.4) !important;
+  }
+
+  /* Print copy styling */
+  .print-copy {
+    page-break-after: always;
+    margin: 0 !important;
+  }
+
+  .print-copy:last-child {
+    page-break-after: auto;
+  }
+
+  /* Yellow background for duplicate */
+  .print-yellow {
+    background-color: #fffde7 !important;
+  }
+
+  .print-white {
+    background-color: white !important;
+  }
+
+  /* Screen preview container hidden */
+  .screen-only {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* Hide print copies on screen */
+.print-only {
+  display: none;
+}
+
+.screen-only {
+  display: block;
+}
