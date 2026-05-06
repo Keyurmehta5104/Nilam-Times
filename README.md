@@ -1,73 +1,122 @@
-# Welcome to your Lovable project
+# 📋 Nilam Times - Bill Entry System
 
-## Project info
+A modern billing and invoice management system built with React, TypeScript, and Vite. Streamline your business billing process with an intuitive interface.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🔗 Live Demo
 
-## How can I edit this code?
+[https://nilam-times.vercel.app](https://nilam-times.vercel.app)
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+- Create and manage bills/invoices
+- Customer management
+- Product/item tracking
+- Bill history and search
+- Print-ready invoice generation
+- Responsive design with Tailwind CSS
+- Modern shadcn-ui components
+- TypeScript for type safety
+- Fast and lightweight with Vite
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🛠️ Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend Framework:** React 18
+- **Language:** TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **UI Components:** shadcn-ui
+- **Deployment:** Vercel
+- **Package Manager:** Bun
 
-**Use your preferred IDE**
+## 🚀 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js (v16 or higher)
+- npm or Bun package manager
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clone the repository
+```bash
+git clone https://github.com/Keyurmehta5104/Nilam-Times.git
+cd Nilam-Times
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies
+```bash
+npm install
+# or
+bun install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Set up environment variables
+```bash
+# Copy .env file and add your API keys
+cp .env.example .env
+```
 
-**Use GitHub Codespaces**
+4. Run the development server
+```bash
+npm run dev
+# or
+bun run dev
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+5. Open [http://localhost:5173](http://localhost:5173) in your browser
 
-## What technologies are used for this project?
+## 📦 Build for Production
 
-This project is built with:
+```bash
+npm run build
+# or
+bun run build
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The production-ready files will be in the `dist` folder.
 
-## How can I deploy this project?
+## 🎨 Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```
+Nilam-Times/
+├── public/              # Static assets
+├── src/                 # Source files
+│   ├── components/      # React components
+│   │   ├── ui/         # shadcn-ui components
+│   │   ├── BillForm/   # Bill entry form
+│   │   └── ...         # Other components
+│   ├── lib/            # Utility functions
+│   ├── types/          # TypeScript type definitions
+│   └── App.tsx         # Main app component
+├── .env                # Environment variables
+├── index.html          # Entry HTML
+├── package.json        # Dependencies
+├── tailwind.config.ts  # Tailwind configuration
+├── tsconfig.json       # TypeScript configuration
+└── vite.config.ts      # Vite configuration
+```
 
-## Can I connect a custom domain to my Lovable project?
+## 💼 Use Cases
 
-Yes, you can!
+- Small business billing
+- Retail invoice generation
+- Service provider billing
+- Freelance invoice management
+- Daily sales tracking
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🤝 Contributing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 👨‍💻 Author
+
+**Keyur Mehta**
+- GitHub: [@Keyurmehta5104](https://github.com/Keyurmehta5104)
+
+---
+
+Built with ❤️ using React + TypeScript + Vite
