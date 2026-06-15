@@ -1,13 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useClients, Client } from "@/hooks/useClients";
 import { useInvoices, Invoice } from "@/hooks/useInvoices";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search as SearchIcon, Eye, User, FileText, IndianRupee } from "lucide-react";
+import { Eye, Search as SearchIcon, User, FileText, IndianRupee, MapPin, Hash, ArrowLeft, Calendar } from "lucide-react";
 import { format } from "date-fns";
 
 const Search = () => {
@@ -32,220 +28,245 @@ const Search = () => {
     setSelectedClient(client);
     const invoices = await fetchInvoicesByClient(client.id);
     setClientInvoices(invoices);
-    const total = invoices.reduce((sum, inv) => sum + Number(inv.grand_total), 0);
-    setTotalAmount(total);
+    setTotalAmount(invoices.reduce((sum, inv) => sum + Number(inv.grand_total), 0));
   };
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto py-4 sm:py-8 px-3 sm:px-4 mb-20 lg:mb-0">
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-              <SearchIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-              Search Client
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Input
+      <div className="py-6 px-4 sm:px-6 mb-20 lg:mb-0">
+
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-slate-800">Search Client</h1>
+          <p className="text-slate-500 text-sm mt-0.5">Find clients and view their invoices</p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-6">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
                 placeholder="Enter client name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="flex-1"
+                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 text-sm placeholder-slate-400 outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-100 focus:bg-white"
               />
-              <Button onClick={handleSearch} className="w-full sm:w-auto">
-                <SearchIcon className="h-4 w-4 mr-2" />
-                Search
-              </Button>
             </div>
-          </CardContent>
-        </Card>
+            <button
+              onClick={handleSearch}
+              className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm"
+            >
+              <SearchIcon className="h-4 w-4" />
+              <span className="hidden sm:inline">Search</span>
+            </button>
+          </div>
+        </div>
 
+        {/* Search Results */}
         {clients.length > 0 && !selectedClient && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Search Results</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {clientsLoading ? (
-                <div className="text-center py-4">Searching...</div>
-              ) : (
-                <div className="space-y-2">
-                  {clients.map((client) => (
-                    <div
-                      key={client.id}
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border rounded-lg hover:bg-muted cursor-pointer transition-colors"
-                      onClick={() => handleClientSelect(client)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <User className="h-5 w-5 text-primary flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">{client.name}</p>
-                          <p className="text-sm text-muted-foreground break-all">
-                            {client.address || "No address"} | GSTIN: {client.gstin || "N/A"}
-                          </p>
-                        </div>
+          <div className="mb-6">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+              {clients.length} result{clients.length !== 1 ? "s" : ""} found
+            </p>
+            {clientsLoading ? (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center py-12">
+                <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {clients.map((client) => (
+                  <div
+                    key={client.id}
+                    onClick={() => handleClientSelect(client)}
+                    className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center justify-between gap-4 cursor-pointer hover:border-blue-200 hover:shadow-md transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+                        <span className="text-blue-700 font-bold text-base">
+                          {(client.name || "?")[0].toUpperCase()}
+                        </span>
                       </div>
-                      <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                        View Bills
-                      </Button>
+                      <div>
+                        <p className="font-semibold text-slate-800 text-sm">{client.name}</p>
+                        <p className="text-slate-400 text-xs mt-0.5">{client.address || "No address"}</p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    <div className="flex items-center gap-2 text-blue-600 text-xs font-medium bg-blue-50 px-3 py-1.5 rounded-lg flex-shrink-0">
+                      <FileText className="h-3.5 w-3.5" />
+                      View Bills
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
+        {/* Client Detail */}
         {selectedClient && (
           <>
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <User className="h-5 w-5 sm:h-6 sm:w-6" />
-                    <span className="text-lg sm:text-xl">{selectedClient.name}</span>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={() => setSelectedClient(null)} className="w-full sm:w-auto">
-                    Back to Results
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">Address</p>
-                    <p className="font-medium">{selectedClient.address || "N/A"}</p>
-                  </div>
-                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">GSTIN</p>
-                    <p className="font-medium">{selectedClient.gstin || "N/A"}</p>
-                  </div>
-                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm text-muted-foreground">State / Code</p>
-                    <p className="font-medium">{selectedClient.state || "N/A"} / {selectedClient.code || "N/A"}</p>
+            {/* Back button + client header */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-4">
+              <button
+                onClick={() => setSelectedClient(null)}
+                className="flex items-center gap-1.5 text-slate-500 hover:text-slate-700 text-sm mb-4 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" /> Back to results
+              </button>
+
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-black text-xl">
+                    {(selectedClient.name || "?")[0].toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800">{selectedClient.name}</h2>
+                  <p className="text-slate-500 text-sm">Client Details</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex items-start gap-2.5 p-3 bg-slate-50 rounded-xl">
+                  <MapPin className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-slate-400 mb-0.5">Address</p>
+                    <p className="text-sm font-medium text-slate-700">{selectedClient.address || "N/A"}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/10 rounded-full">
-                      <FileText className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Invoices</p>
-                      <p className="text-2xl font-bold">{clientInvoices.length}</p>
-                    </div>
+                <div className="flex items-start gap-2.5 p-3 bg-slate-50 rounded-xl">
+                  <Hash className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-slate-400 mb-0.5">GSTIN</p>
+                    <p className="text-sm font-medium text-slate-700">{selectedClient.gstin || "N/A"}</p>
                   </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-500/10 rounded-full">
-                      <IndianRupee className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Amount</p>
-                      <p className="text-2xl font-bold">
-                        ₹{totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
+                </div>
+                <div className="flex items-start gap-2.5 p-3 bg-slate-50 rounded-xl">
+                  <User className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-slate-400 mb-0.5">State / Code</p>
+                    <p className="text-sm font-medium text-slate-700">{selectedClient.state || "N/A"} / {selectedClient.code || "N/A"}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Invoices</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {invoicesLoading ? (
-                  <div className="text-center py-8">Loading invoices...</div>
-                ) : clientInvoices.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No invoices found for this client.
-                  </div>
-                ) : (
-                  <>
-                    {/* Desktop Table View */}
-                    <div className="hidden sm:block overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Invoice No</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead className="text-right">Amount</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {clientInvoices.map((invoice) => (
-                            <TableRow key={invoice.id}>
-                              <TableCell className="font-medium">{invoice.invoice_no}</TableCell>
-                              <TableCell>
-                                {format(new Date(invoice.invoice_date), "dd/MM/yyyy")}
-                              </TableCell>
-                              <TableCell className="text-right font-semibold">
-                                ₹{Number(invoice.grand_total).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => navigate(`/invoice/${invoice.id}`)}
-                                >
-                                  <Eye className="h-4 w-4 mr-1" />
-                                  View
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Total Bills</p>
+                  <p className="text-2xl font-bold text-slate-800">{clientInvoices.length}</p>
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                  <IndianRupee className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Total Amount</p>
+                  <p className="text-lg font-bold text-slate-800">
+                    ₹{totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 0 })}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                    {/* Mobile Card View */}
-                    <div className="sm:hidden space-y-3">
-                      {clientInvoices.map((invoice) => (
-                        <Card key={invoice.id} className="overflow-hidden">
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-start mb-2">
-                              <div>
-                                <p className="font-semibold text-base">#{invoice.invoice_no}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {format(new Date(invoice.invoice_date), "dd/MM/yyyy")}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <p className="font-bold text-base text-primary">
-                                  ₹{Number(invoice.grand_total).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                                </p>
-                              </div>
-                            </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full mt-2"
-                              onClick={() => navigate(`/invoice/${invoice.id}`)}
-                            >
-                              <Eye className="h-4 w-4 mr-1" /> View Invoice
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            {/* Invoices */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100">
+                <h3 className="font-semibold text-slate-800">Invoices</h3>
+              </div>
+
+              {invoicesLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : clientInvoices.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center px-4">
+                  <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mb-3">
+                    <FileText className="h-6 w-6 text-slate-400" />
+                  </div>
+                  <p className="text-slate-500 text-sm">No invoices found for this client.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Desktop */}
+                  <div className="hidden sm:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-slate-100">
+                          <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Invoice No</th>
+                          <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+                          <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+                          <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50">
+                        {clientInvoices.map((invoice) => (
+                          <tr key={invoice.id} className="hover:bg-slate-50/70 transition-colors">
+                            <td className="px-5 py-3.5">
+                              <span className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 font-semibold text-sm px-2.5 py-1 rounded-lg">
+                                #{invoice.invoice_no}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3.5 text-slate-600 text-sm flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                              {format(new Date(invoice.invoice_date), "dd MMM yyyy")}
+                            </td>
+                            <td className="px-5 py-3.5 text-right font-bold text-green-700 text-sm">
+                              ₹{Number(invoice.grand_total).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                            </td>
+                            <td className="px-5 py-3.5 text-right">
+                              <button
+                                onClick={() => navigate(`/invoice/${invoice.id}`)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-sm font-medium hover:bg-blue-100 transition-colors"
+                              >
+                                <Eye className="h-3.5 w-3.5" /> View
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile */}
+                  <div className="sm:hidden divide-y divide-slate-100">
+                    {clientInvoices.map((invoice) => (
+                      <div key={invoice.id} className="p-4 flex items-center justify-between">
+                        <div>
+                          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 font-semibold text-sm px-2 py-0.5 rounded-lg mb-1">
+                            #{invoice.invoice_no}
+                          </span>
+                          <p className="text-xs text-slate-400 flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {format(new Date(invoice.invoice_date), "dd MMM yyyy")}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-green-700 font-bold text-sm">
+                            ₹{Number(invoice.grand_total).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                          </span>
+                          <button
+                            onClick={() => navigate(`/invoice/${invoice.id}`)}
+                            className="p-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </>
         )}
       </div>
