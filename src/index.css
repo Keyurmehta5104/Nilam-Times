@@ -1,0 +1,1050 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Condensed:wght@700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 75% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 40% 95%;
+    --secondary-foreground: 0 75% 35%;
+    --muted: 0 20% 96%;
+    --muted-foreground: 0 10% 45%;
+    --accent: 0 50% 92%;
+    --accent-foreground: 0 75% 35%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 30% 85%;
+    --input: 0 30% 85%;
+    --ring: 0 75% 45%;
+    --radius: 0.25rem;
+    --font-heading: 'Roboto Condensed', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+
+    /* Single source of truth for all bill borders */
+    --bill-border: 0.3mm solid #000;
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 30% 20%;
+    --secondary-foreground: 0 50% 80%;
+    --muted: 0 20% 18%;
+    --muted-foreground: 0 10% 65%;
+    --accent: 0 30% 22%;
+    --accent-foreground: 0 50% 80%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 20% 25%;
+    --input: 0 20% 25%;
+    --ring: 0 70% 50%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  input[type="text"]:not(.bill-field-input):not(.bill-cell-input):not(.bill-tax-input):not(.bill-prefix-input),
+  input[type="number"]:not(.bill-field-input):not(.bill-cell-input):not(.bill-tax-input),
+  input[type="tel"],
+  input[type="email"],
+  input[type="search"],
+  textarea:not(.bill-field-input),
+  select {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input[type="date"]:not(.bill-date-input) {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  button:not(.bill-page button),
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-ring outline-offset-2;
+  }
+}
+
+@layer components {
+  .invoice-container {
+    overflow: visible !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    @apply bg-card shadow-lg max-w-4xl mx-auto;
+  }
+
+  .invoice-header {
+    @apply bg-accent text-accent-foreground py-4 px-6 text-center;
+  }
+
+  .invoice-title {
+    @apply text-4xl font-bold tracking-wider text-primary;
+    font-family: var(--font-heading);
+  }
+
+  .invoice-section {
+    @apply border border-primary/30 p-3;
+  }
+
+  .invoice-label {
+    @apply text-primary font-medium text-sm;
+  }
+
+  .invoice-input {
+    @apply border-b border-primary/40 bg-transparent outline-none px-1 py-0.5 text-foreground w-full;
+  }
+
+  .invoice-table {
+    @apply w-full border-collapse;
+  }
+
+  .invoice-table th {
+    @apply bg-accent text-primary font-medium text-sm py-2 px-3 border border-primary/30;
+  }
+
+  .invoice-table td {
+    @apply py-2 px-3 border border-primary/30;
+  }
+
+  .invoice-table input {
+    @apply bg-transparent outline-none w-full text-center;
+  }
+
+  .tax-row {
+    @apply flex items-center justify-between py-1 border-b border-primary/20;
+  }
+
+  .bank-box {
+    @apply border border-primary/30 p-3;
+  }
+
+  .signature-line {
+    @apply border-t border-primary mt-8 pt-2 text-center;
+  }
+
+  .mobile-card {
+    @apply bg-white border rounded-lg shadow-sm p-4;
+  }
+
+  .mobile-input {
+    @apply w-full px-4 py-3 border rounded-lg text-base;
+  }
+
+  .mobile-button {
+    @apply w-full py-3 px-4 rounded-lg font-medium text-base;
+  }
+}
+
+@layer utilities {
+  .container-responsive {
+    @apply px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl;
+  }
+
+  .mobile-only {
+    @apply block lg:hidden;
+  }
+
+  .desktop-only {
+    @apply hidden lg:block;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .text-responsive-md {
+    @apply text-base sm:text-lg lg:text-xl;
+  }
+
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .truncate-mobile {
+    @apply truncate;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+.screen-only {
+  display: block;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+@media (max-width: 9px) {
+  body {
+    overscroll-behavior-y: contain;
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ================================================
+   BILL PAGE — undo global overrides inside bill
+   ================================================ */
+
+.bill-page input,
+.bill-page textarea,
+.bill-page select {
+  font-size: inherit !important;
+  font-family: inherit !important;
+  line-height: inherit !important;
+  min-height: unset !important;
+  min-width: unset !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.bill-page button {
+  min-height: unset !important;
+  min-width: unset !important;
+}
+
+.bill-page input[type="date"],
+.bill-date-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #000;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+/* Desktop: hide the calendar icon to keep the clean invoice look */
+.bill-page input[type="date"]:not(.bill-date-mobile)::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Mobile date fields: always show the calendar picker icon */
+.bill-date-mobile::-webkit-calendar-picker-indicator {
+  display: block !important;
+  opacity: 0.6;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  /* On desktop/tablet, hide the icon inside the bill for clean look */
+  .bill-page .bill-date-mobile::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+}
+
+.bill-page input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+/* ================================================
+   BILL LAYOUT
+   ================================================ */
+
+.bill-page,
+.bill-page *,
+.bill-page *::before,
+.bill-page *::after {
+  box-sizing: border-box;
+}
+
+.bill-page {
+  --bill-header-height: 22mm;
+  --bill-details-height: 39mm;
+  --bill-summary-height: 33mm;
+  --bill-footer-height: 22mm;
+  width: 190mm;
+  height: 277mm;
+  min-height: 277mm;
+  max-height: 277mm;
+  margin: 0 auto;
+  padding: 0;
+  background: #fff;
+  color: #000;
+  font-family: "Times New Roman", serif;
+  font-size: 13px;
+  overflow: hidden;
+  /* Mobile: scale down to fit the viewport width */
+  transform-origin: top center;
+}
+
+/* Responsive scale for small screens — keeps exact A4 proportions */
+@media screen and (max-width: 740px) {
+  .screen-only .bill-page {
+    transform: scale(calc((100vw - 16px) / 718px));
+    margin-bottom: calc((277mm * (100vw - 16px) / 718px) - 277mm);
+  }
+}
+@media screen and (max-width: 480px) {
+  .screen-only .bill-page {
+    transform: scale(calc((100vw - 8px) / 718px));
+    margin-bottom: calc((277mm * (100vw - 8px) / 718px) - 277mm);
+  }
+}
+
+/* Outer border — same weight as all internal borders */
+.bill-page-inner {
+  width: 190mm;
+  height: 277mm;
+  margin: 0 auto;
+  border: 0.3mm solid #000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* ── HEADER ── */
+.bill-header {
+  border-bottom: none;
+}
+
+.bill-copy-mark {
+  display: none;
+}
+
+/* Grey band: bottom border same weight */
+.bill-company-name {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 3mm 3mm 2mm;
+  background: #d8d8d8;
+  border-bottom: 0.3mm solid #000;
+  letter-spacing: 1px;
+}
+
+/* Address row */
+.bill-company-address {
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.3;
+  padding: 1.5mm 3mm;
+  background: #fff;
+  border-bottom: 0.3mm solid #000;
+}
+
+/* Debit Memo / TAX INVOICE / Original strip */
+.bill-title-strip-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-bottom: 0.3mm solid #000;
+}
+
+.bill-title-strip-table td {
+  border: none;
+  background: #fff;
+  padding: 1.5mm 2.5mm;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.bill-title-strip-left {
+  width: 24%;
+  text-align: left;
+}
+
+.bill-title-strip-center {
+  width: 52%;
+  text-align: center;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.bill-title-strip-right {
+  width: 24%;
+  text-align: right;
+}
+
+/* ── DETAILS ── */
+.bill-details {
+  height: auto;
+  overflow: hidden;
+}
+
+.bill-details-table,
+.bill-inner-table,
+.bill-items-table,
+.bill-summary-table,
+.bill-info-table,
+.bill-totals-table,
+.bill-footer-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* All outer section cell borders: same 0.3mm */
+.bill-details-table td,
+.bill-summary-table td,
+.bill-footer-table td {
+  border: 0.3mm solid #000;
+  vertical-align: top;
+}
+
+.bill-details-table>tbody>tr>td,
+.bill-summary-table>tbody>tr>td,
+.bill-footer-table>tbody>tr>td {
+  padding: 0;
+}
+
+/* Right meta panel: grey bg */
+.bill-meta-table {
+  border: none;
+  background: #fff;
+  height: 100%;
+  width: 100%;
+}
+
+.bill-meta-table td {
+  padding: 1.3mm 1.8mm;
+  font-size: 13px;
+  line-height: 1.25;
+  border: none;
+  vertical-align: middle;
+}
+
+/* Left party table inner cells: no individual borders */
+.bill-inner-table td {
+  border: none;
+  font-size: 13px;
+  line-height: 1.25;
+  padding: 0.8mm 1.2mm;
+  vertical-align: top;
+}
+
+.bill-label,
+.bill-info-label {
+  width: 32mm;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.bill-meta-table .bill-label {
+  width: 20mm;
+  font-size: 13px;
+}
+
+.bill-colon {
+  width: 3mm;
+  text-align: center;
+  font-weight: 700;
+}
+
+.bill-label.top,
+.bill-colon.top {
+  vertical-align: top;
+}
+
+.bill-label.strong,
+.bill-colon.strong,
+.bill-info-label.strong,
+.strong {
+  font-weight: 700;
+}
+
+.bill-field-value,
+.bill-cell-value {
+  display: block;
+  min-height: 13px;
+  line-height: 1.2;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+}
+
+.bill-field-value.bold {
+  font-weight: 700;
+}
+
+.bill-field-value.multiline {
+  min-height: 26px;
+}
+
+.bill-field-input,
+.bill-cell-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #000;
+  font-family: "Times New Roman", serif;
+  font-size: 13px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+}
+
+.bill-field-input.multiline {
+  min-height: 26px;
+  resize: none;
+}
+
+.bill-field-input.strong,
+.bill-field-input.bold {
+  font-weight: 700;
+}
+
+.bill-inline-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.bill-inline-pair-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.bill-inline-pair-group.state-group {
+  flex: 1 1 auto;
+}
+
+.bill-inline-pair-group.code-group {
+  flex: 0 0 42%;
+}
+
+.bill-inline-label,
+.bill-inline-colon {
+  font-weight: 700;
+  font-size: 13px;
+  margin-right: 2px;
+}
+
+.bill-inline-pair-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.bill-prefix-input-wrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.bill-prefix-static {
+  flex: 0 0 auto;
+  color: #000;
+  font-weight: 700;
+  font-size: 12px;
+  padding-right: 1px;
+}
+
+.bill-prefix-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 700;
+}
+
+/* ── ITEMS ── */
+/* Top/bottom borders: same 0.3mm */
+.bill-items-section {
+  flex: 1 1 auto;
+  overflow: hidden;
+  border-top: 0.3mm solid #000;
+  border-bottom: 0.3mm solid #000;
+}
+
+.bill-items-table {
+  height: 100%;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Header: only bottom border, same 0.3mm */
+.bill-items-table thead th {
+  font-weight: 700;
+  text-align: center;
+  font-size: 13px;
+  vertical-align: middle;
+  background: #fff;
+  border: none;
+  border-bottom: 0.3mm solid #000;
+  padding: 1.2mm 1mm;
+}
+
+/* Body cells: no borders */
+.bill-items-table td {
+  border: none;
+  padding: 0.6mm 1mm;
+  font-size: 13px;
+  line-height: 1.1;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.bill-items-table th.left,
+.bill-items-table td.left {
+  text-align: left;
+}
+
+.bill-items-table th.right,
+.bill-items-table td.right {
+  text-align: right;
+}
+
+.bill-items-table td.center,
+.bill-items-table th.center {
+  text-align: center;
+}
+
+.bill-item-row td {
+  height: 6mm;
+  vertical-align: top;
+}
+
+.bill-item-filler td {
+  height: 100%;
+  border: none !important;
+}
+
+/* ── SUMMARY ── */
+/* Top border: same 0.3mm */
+.bill-bottom-section-v2 {
+  width: 100%;
+  border-top: 0.3mm solid #000;
+}
+
+.bill-row-split {
+  display: flex;
+  width: 100%;
+}
+
+.bill-col-left {
+  width: 67.2%;
+  padding: 1mm 1.8mm;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.bill-col-right {
+  width: 32.8%;
+  padding: 1mm 1.8mm;
+  font-size: 13px;
+}
+
+.flex-between {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bill-tax-row-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.bill-tax-row-new .label {
+  width: 30%;
+}
+
+.bill-tax-row-new .percent {
+  width: 25%;
+  text-align: center;
+}
+
+.bill-tax-row-new .amount {
+  width: 45%;
+  text-align: right;
+}
+
+.font-size-9 {
+  font-size: 10.5px !important;
+}
+
+.font-size-10 {
+  font-size: 12px !important;
+}
+
+.font-size-11 {
+  font-size: 13px !important;
+}
+
+.bill-footer-combined {
+  position: relative;
+  min-height: 22mm;
+}
+
+.bill-terms-area {
+  flex: 1;
+}
+
+.bill-terms-ol-v2 {
+  list-style: decimal;
+  margin-left: 15px;
+}
+
+.bill-terms-ol-v2 li {
+  margin-top: 0.4mm;
+  font-size: 12px;
+}
+
+.bill-sign-area {
+  width: 32.8%;
+}
+
+.bill-sign-space-v2 {
+  height: 12mm;
+}
+
+.border-t-black {
+  border-top: 0.3mm solid #000 !important;
+}
+
+.border-b-black {
+  border-bottom: 0.3mm solid #000 !important;
+}
+
+.border-r-black {
+  border-right: 0.3mm solid #000 !important;
+}
+
+/* ── PRINT ── */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-family: "Times New Roman", serif !important;
+  }
+
+  .screen-only,
+  .no-print,
+  nav,
+  header,
+  aside,
+  footer,
+  button,
+  .fixed,
+  .sticky,
+  [role="dialog"],
+  [data-sonner-toaster],
+  [data-sonner-toast],
+  .sonner-toast,
+  .toaster {
+    display: none !important;
+  }
+
+  .print-page-wrap {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .print-only {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  /*
+   * Desktop: bill (190 × 277 mm) centred inside the full A4 page (210 × 297 mm).
+   * @page { margin: 0 } gives a 297 mm printable height so the 297 mm container
+   * fits exactly and the bill appears at full size with ~10 mm margins all around.
+   */
+  .print-only .print-copy {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-sizing: border-box !important;
+  }
+
+  .print-only .print-copy:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  .bill-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    transform: none !important;
+    zoom: 1 !important;
+    font-size: 14px !important;
+  }
+
+  /*
+   * iOS fix: iOS Chrome/Safari ignore @page { margin: 0 } and apply their own
+   * ~12–15 mm margins, shrinking the printable height to ~267–272 mm. A 277 mm
+   * bill overflows that by 5–10 mm → each copy spills onto a 2nd page → 6 pages.
+   *
+   * main.tsx adds class "ios-device" to <html> on iOS at startup (JS navigator
+   * detection is reliable where CSS @supports is not for iOS Chrome).
+   *
+   * zoom: 0.93 makes the layout height 277 × 0.93 = 257.6 mm — well within any
+   * iOS printable area. The print-copy height is auto so it wraps the zoomed bill
+   * and page-break-after:always handles pagination cleanly.
+   */
+  html.ios-device .print-only .print-copy {
+    height: auto !important;
+    min-height: unset !important;
+    max-height: none !important;
+    overflow: visible !important;
+    align-items: flex-start !important;
+  }
+
+  html.ios-device .bill-page {
+    /* main.tsx injects @page { margin: 10mm } for iOS → printable 190×277 mm.
+       zoom: 0.90 → 189×267 mm — fits both width and height with margin to spare. */
+    zoom: 0.90 !important;
+  }
+
+  .bill-page-inner {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    border: 0.3mm solid #000 !important;
+  }
+
+  /* Preserve backgrounds in print */
+  .bill-company-name {
+    background: #d8d8d8 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-size: 28px !important;
+    padding: 4mm 3mm 3mm !important;
+  }
+
+  .bill-company-address {
+    font-size: 12px !important;
+    padding: 2mm 3mm !important;
+  }
+
+  .bill-title-strip-table td {
+    font-size: 12px !important;
+    padding: 2mm 3mm !important;
+  }
+
+  .bill-inner-table td,
+  .bill-meta-table td {
+    font-size: 14px !important;
+    padding: 1mm 1.5mm !important;
+  }
+
+  .bill-label,
+  .bill-info-label,
+  .bill-meta-table .bill-label {
+    font-size: 14px !important;
+  }
+
+  .bill-items-table thead th {
+    font-size: 14px !important;
+    padding: 1.5mm 1mm !important;
+  }
+
+  .bill-items-table td {
+    font-size: 14px !important;
+  }
+
+  .bill-col-left,
+  .bill-col-right {
+    font-size: 14px !important;
+  }
+
+  .bill-meta-table {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bill-totals-table tr.grand-total td,
+  .bill-totals-table .grand-total td,
+  .bg-grey {
+    background: #d8d8d8 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bill-items-table,
+  .bill-summary-table,
+  .bill-footer-table,
+  .bill-details-table {
+    page-break-inside: avoid !important;
+    break-inside: avoid-page !important;
+  }
+
+  .bill-item-row td {
+    height: 6.5mm !important;
+  }
+
+  .bill-item-filler td {
+    height: 100% !important;
+    border: none !important;
+  }
+
+  .bill-sign-space-v2 {
+    height: 8mm !important;
+  }
+
+  .bill-footer-combined {
+    min-height: 18mm !important;
+  }
+}
+.bg-grey {
+  background-color: #d8d8d8 !important;
+}
+
+.border-b-bold {
+  border-bottom: 0.4mm solid #000 !important;
+}
+
+.border-all {
+  border: 0.2mm solid #000 !important;
+}
+
+.border-b-thin {
+  border-bottom: 0.3mm solid #000 !important;
+}
+
+.center {
+  text-align: center !important;
+}
+
+.left {
+  text-align: left !important;
+}
+
+.right {
+  text-align: right !important;
+}
+
+.border-left {
+  border-left: 0.3mm solid #000 !important;
+}
+
+.border-right {
+  border-right: 0.3mm solid #000 !important;
+}
+
+.border-top-thin {
+  border-top: 0.3mm solid #000 !important;
+}
