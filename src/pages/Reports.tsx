@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
+import PageHeader from "@/components/PageHeader";
 import { db } from "@/firebase/config";
 import {
   collection,
@@ -26,13 +27,13 @@ interface PeriodReport {
 }
 
 const StatCard = ({ icon: Icon, label, value, color }: { icon: any; label: string; value: string; color: string }) => (
-  <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+  <div className="bg-white rounded-2xl shadow-sm border border-slate-200/70 p-5">
     <div className="flex items-center gap-4">
       <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
         <Icon className="h-6 w-6" />
       </div>
       <div>
-        <p className="text-sm text-slate-500">{label}</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
         <p className="text-2xl font-bold text-slate-800 mt-0.5">{value}</p>
       </div>
     </div>
@@ -174,39 +175,34 @@ const Reports = () => {
 
   return (
     <Layout>
-      <div className="py-6 px-4 sm:px-6 mb-20 lg:mb-0">
-
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-800">Reports</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Business overview and analytics</p>
-        </div>
+      <div className="py-4 sm:py-6 px-3 sm:px-6">
+        <PageHeader title="Reports" subtitle="Business overview — clients, weekly and monthly sales" icon={BarChart3} />
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <StatCard icon={Users} label="Total Clients" value={String(totals.clients)} color="bg-purple-50 text-purple-600" />
-          <StatCard icon={FileText} label="Total Invoices" value={String(totals.invoices)} color="bg-blue-50 text-blue-600" />
+          <StatCard icon={Users} label="Total Clients" value={String(totals.clients)} color="bg-indigo-50 text-indigo-600" />
+          <StatCard icon={FileText} label="Total Invoices" value={String(totals.invoices)} color="bg-[#1e3a5f]/10 text-[#1e3a5f]" />
           <StatCard
             icon={IndianRupee}
             label="Total Revenue"
             value={`₹${totals.amount.toLocaleString("en-IN", { minimumFractionDigits: 0 })}`}
-            color="bg-green-50 text-green-600"
+            color="bg-emerald-50 text-emerald-600"
           />
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="flex border-b border-slate-100">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/70 overflow-hidden">
+          <div className="flex gap-1 p-1.5 bg-slate-100/80 border-b border-slate-200/70">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-medium transition-all ${
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     activeTab === tab.id
-                      ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50/50"
-                      : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                      ? "bg-[#1e3a5f] text-white shadow-sm"
+                      : "text-slate-500 hover:text-[#1e3a5f] hover:bg-white"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -221,7 +217,7 @@ const Reports = () => {
             {activeTab === "overview" && (
               loading ? (
                 <div className="flex flex-col items-center justify-center py-16">
-                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-3" />
+                  <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin mb-3" />
                   <p className="text-slate-400 text-sm">Loading reports...</p>
                 </div>
               ) : clientReports.length === 0 ? (
@@ -245,7 +241,7 @@ const Reports = () => {
                           <th className="pb-3 w-40"></th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-50">
+                      <tbody className="divide-y divide-slate-100">
                         {clientReports.map((client, index) => (
                           <tr key={client.id} className="hover:bg-slate-50/50 transition-colors">
                             <td className="py-3.5 pr-4">
@@ -260,24 +256,24 @@ const Reports = () => {
                             </td>
                             <td className="py-3.5">
                               <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                                  <span className="text-blue-700 text-xs font-bold">{(client.name || "?")[0].toUpperCase()}</span>
+                                <div className="w-8 h-8 rounded-lg bg-[#1e3a5f]/10 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-[#1e3a5f] text-xs font-bold">{(client.name || "?")[0].toUpperCase()}</span>
                                 </div>
                                 <span className="font-medium text-slate-800 text-sm">{client.name}</span>
                               </div>
                             </td>
                             <td className="py-3.5 text-right">
-                              <span className="inline-flex items-center justify-center bg-blue-50 text-blue-700 text-sm font-semibold px-2.5 py-0.5 rounded-lg">
+                              <span className="inline-flex items-center justify-center bg-[#1e3a5f]/10 text-[#1e3a5f] text-sm font-semibold px-2.5 py-0.5 rounded-lg">
                                 {client.totalInvoices}
                               </span>
                             </td>
-                            <td className="py-3.5 text-right font-bold text-green-700 text-sm">
+                            <td className="py-3.5 text-right font-bold text-emerald-700 text-sm">
                               ₹{client.totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </td>
                             <td className="py-3.5 pl-4">
                               <div className="w-full bg-slate-100 rounded-full h-1.5">
                                 <div
-                                  className="bg-blue-500 h-1.5 rounded-full transition-all"
+                                  className="bg-gradient-to-r from-[#1e3a5f] to-[#1d4ed8] h-1.5 rounded-full transition-all"
                                   style={{ width: `${(client.totalAmount / maxAmount) * 100}%` }}
                                 />
                               </div>
@@ -301,8 +297,8 @@ const Reports = () => {
                           }`}>
                             {index + 1}
                           </span>
-                          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                            <span className="text-blue-700 text-xs font-bold">{(client.name || "?")[0].toUpperCase()}</span>
+                          <div className="w-8 h-8 rounded-lg bg-[#1e3a5f]/10 flex items-center justify-center flex-shrink-0">
+                            <span className="text-[#1e3a5f] text-xs font-bold">{(client.name || "?")[0].toUpperCase()}</span>
                           </div>
                           <span className="font-semibold text-slate-800 text-sm flex-1">{client.name}</span>
                         </div>
@@ -313,13 +309,13 @@ const Reports = () => {
                           </div>
                           <div className="bg-white p-2.5 rounded-lg text-center">
                             <p className="text-xs text-slate-400">Amount</p>
-                            <p className="text-base font-bold text-green-700">
+                            <p className="text-base font-bold text-emerald-700">
                               ₹{client.totalAmount.toLocaleString("en-IN", { minimumFractionDigits: 0 })}
                             </p>
                           </div>
                         </div>
                         <div className="w-full bg-slate-200 rounded-full h-1.5">
-                          <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${(client.totalAmount / maxAmount) * 100}%` }} />
+                          <div className="bg-gradient-to-r from-[#1e3a5f] to-[#1d4ed8] h-1.5 rounded-full" style={{ width: `${(client.totalAmount / maxAmount) * 100}%` }} />
                         </div>
                       </div>
                     ))}
@@ -332,22 +328,22 @@ const Reports = () => {
             {activeTab === "weekly" && (
               weeklyReports.length === 0 ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
                 <div className="space-y-2">
                   {weeklyReports.map((week, index) => (
-                    <div key={index} className={`p-4 rounded-xl flex items-center justify-between gap-4 ${index === 0 ? "bg-blue-50 border border-blue-100" : "bg-slate-50"}`}>
+                    <div key={index} className={`p-4 rounded-xl flex items-center justify-between gap-4 ${index === 0 ? "bg-[#1e3a5f]/5 border border-[#1e3a5f]/15" : "bg-slate-50"}`}>
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${index === 0 ? "bg-blue-600" : "bg-white"}`}>
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${index === 0 ? "bg-[#1e3a5f]" : "bg-white"}`}>
                           <Calendar className={`h-4 w-4 ${index === 0 ? "text-white" : "text-slate-400"}`} />
                         </div>
                         <div>
-                          <p className={`text-sm font-semibold ${index === 0 ? "text-blue-700" : "text-slate-700"}`}>{week.label}</p>
+                          <p className={`text-sm font-semibold ${index === 0 ? "text-[#1e3a5f]" : "text-slate-700"}`}>{week.label}</p>
                           <p className="text-xs text-slate-400">{week.invoices} invoice{week.invoices !== 1 ? "s" : ""}</p>
                         </div>
                       </div>
-                      <span className={`font-bold text-sm ${index === 0 ? "text-blue-700" : "text-green-700"}`}>
+                      <span className={`font-bold text-sm ${index === 0 ? "text-[#1e3a5f]" : "text-emerald-700"}`}>
                         ₹{week.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </span>
                     </div>
@@ -360,22 +356,22 @@ const Reports = () => {
             {activeTab === "monthly" && (
               monthlyReports.length === 0 ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
                 <div className="space-y-2">
                   {monthlyReports.map((month, index) => (
-                    <div key={index} className={`p-4 rounded-xl flex items-center justify-between gap-4 ${index === 0 ? "bg-blue-50 border border-blue-100" : "bg-slate-50"}`}>
+                    <div key={index} className={`p-4 rounded-xl flex items-center justify-between gap-4 ${index === 0 ? "bg-[#1e3a5f]/5 border border-[#1e3a5f]/15" : "bg-slate-50"}`}>
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${index === 0 ? "bg-blue-600" : "bg-white"}`}>
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${index === 0 ? "bg-[#1e3a5f]" : "bg-white"}`}>
                           <BarChart3 className={`h-4 w-4 ${index === 0 ? "text-white" : "text-slate-400"}`} />
                         </div>
                         <div>
-                          <p className={`text-sm font-semibold ${index === 0 ? "text-blue-700" : "text-slate-700"}`}>{month.label}</p>
+                          <p className={`text-sm font-semibold ${index === 0 ? "text-[#1e3a5f]" : "text-slate-700"}`}>{month.label}</p>
                           <p className="text-xs text-slate-400">{month.invoices} invoice{month.invoices !== 1 ? "s" : ""}</p>
                         </div>
                       </div>
-                      <span className={`font-bold text-sm ${index === 0 ? "text-blue-700" : "text-green-700"}`}>
+                      <span className={`font-bold text-sm ${index === 0 ? "text-[#1e3a5f]" : "text-emerald-700"}`}>
                         ₹{month.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </span>
                     </div>

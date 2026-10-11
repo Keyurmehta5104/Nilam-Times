@@ -5,8 +5,8 @@ import { useClients } from "@/hooks/useClients";
 import { useInvoices } from "@/hooks/useInvoices";
 import InvoiceSheet from "./InvoiceSheet";
 import Layout from "./Layout";
-import { Button } from "./ui/button";
-import { Printer, RotateCcw, Save, Menu, X } from "lucide-react";
+import PageHeader, { HeaderButton } from "./PageHeader";
+import { FilePlus2, Printer, RotateCcw, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { calculateInvoiceTotals, roundMoney } from "@/utils/money";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -48,7 +48,6 @@ const Invoice = () => {
   const [data, setData] = useState<InvoiceData>(initialData);
   const [saving, setSaving] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const printLockRef = useRef(false);
   const printTimerRef = useRef<number | null>(null);
   const { getOrCreateClient, clients } = useClients();
@@ -256,53 +255,27 @@ const Invoice = () => {
 
   return (
     <Layout>
-      <div className="xl:hidden bg-white border-b shadow-sm p-4 no-print">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-gray-100"
-            >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-            <h1 className="text-lg font-semibold">New Invoice</h1>
-          </div>
-          <Button size="sm" onClick={handleSave} disabled={saving}>
-            {saving ? "Saving..." : "Save"}
-          </Button>
-        </div>
-      </div>
+      <div className="py-4 sm:py-6 px-2 sm:px-6 print-page-wrap">
+        <PageHeader
+          title="New Invoice"
+          subtitle="Fill in the bill below, then save or print"
+          icon={FilePlus2}
+          actions={
+            <>
+              <HeaderButton onClick={handleReset}>
+                <RotateCcw className="h-4 w-4" /> Reset
+              </HeaderButton>
+              <HeaderButton onClick={handlePrint} disabled={isPrinting}>
+                <Printer className="h-4 w-4" /> {isPrinting ? "Printing..." : "Print"}
+              </HeaderButton>
+              <HeaderButton variant="solid" onClick={handleSave} disabled={saving}>
+                <Save className="h-4 w-4" /> {saving ? "Saving..." : <><span className="sm:hidden">Save</span><span className="hidden sm:inline">Save Invoice</span></>}
+              </HeaderButton>
+            </>
+          }
+        />
 
-      {isMobileMenuOpen && (
-        <div className="xl:hidden bg-white border-b shadow-sm p-4 no-print">
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" onClick={handleReset} className="w-full sm:flex-1">
-              <RotateCcw className="h-4 w-4 mr-2" /> Reset
-            </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint} disabled={isPrinting} className="w-full sm:flex-1">
-              <Printer className="h-4 w-4 mr-2" /> {isPrinting ? "Printing..." : "Print"}
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/invoices")} className="w-full sm:flex-1">
-              View All
-            </Button>
-          </div>
-        </div>
-      )}
-
-      <div className="py-4 sm:py-8 px-3 sm:px-4 pb-24 lg:pb-8 print-page-wrap">
-        <div className="hidden xl:flex max-w-6xl mx-auto mb-6 justify-end gap-3 no-print">
-          <Button variant="outline" onClick={handleReset} className="gap-2">
-            <RotateCcw className="h-4 w-4" /> Reset
-          </Button>
-          <Button variant="outline" onClick={handlePrint} disabled={isPrinting} className="gap-2">
-            <Printer className="h-4 w-4" /> {isPrinting ? "Printing..." : "Print"}
-          </Button>
-          <Button onClick={handleSave} disabled={saving} className="gap-2">
-            <Save className="h-4 w-4" /> {saving ? "Saving..." : "Save Invoice"}
-          </Button>
-        </div>
-
-        <div className="screen-only max-w-6xl mx-auto overflow-x-auto">
+        <div className="screen-only bill-screen-wrap max-w-6xl mx-auto overflow-x-auto pb-2">
           {renderInvoiceSheet()}
         </div>
 
@@ -312,17 +285,6 @@ const Invoice = () => {
               {renderInvoiceSheet(copyType, "min-w-0", true)}
             </div>
           ))}
-        </div>
-
-        <div className="xl:hidden fixed bottom-20 right-4 z-30 no-print">
-          <Button
-            onClick={handleSave}
-            disabled={saving}
-            size="lg"
-            className="rounded-full w-14 h-14 shadow-lg"
-          >
-            <Save className="h-6 w-6" />
-          </Button>
         </div>
       </div>
     </Layout>

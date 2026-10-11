@@ -6,26 +6,27 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 10%;
+    /* Navy theme — matches the navbar / login gradient (#0f172a → #1e3a5f → #1d4ed8) */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 0 75% 45%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 213 54% 24%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 40% 95%;
-    --secondary-foreground: 0 75% 35%;
-    --muted: 0 20% 96%;
-    --muted-foreground: 0 10% 45%;
-    --accent: 0 50% 92%;
-    --accent-foreground: 0 75% 35%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 214 32% 94%;
+    --secondary-foreground: 213 54% 24%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 214 60% 95%;
+    --accent-foreground: 213 54% 24%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 30% 85%;
-    --input: 0 30% 85%;
-    --ring: 0 75% 45%;
-    --radius: 0.25rem;
+    --border: 214 32% 91%;
+    --input: 214 32% 88%;
+    --ring: 221 83% 53%;
+    --radius: 0.625rem;
     --font-heading: 'Roboto Condensed', sans-serif;
     --font-body: 'Roboto', sans-serif;
 
@@ -34,25 +35,25 @@
   }
 
   .dark {
-    --background: 0 0% 10%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 70% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 30% 20%;
-    --secondary-foreground: 0 50% 80%;
-    --muted: 0 20% 18%;
-    --muted-foreground: 0 10% 65%;
-    --accent: 0 30% 22%;
-    --accent-foreground: 0 50% 80%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 213 70% 62%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 15%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 18%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 20% 25%;
-    --input: 0 20% 25%;
-    --ring: 0 70% 50%;
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 213 70% 62%;
   }
 
   * {
@@ -353,15 +354,22 @@
 
 /* Responsive scale for small screens — keeps exact A4 proportions */
 @media screen and (max-width: 740px) {
+  /* The 718px bill is wider than the phone, so it sits left-aligned in its box;
+     scale from the left edge so the shrunken bill lines up with the screen */
+  .bill-screen-wrap {
+    overflow: hidden !important;
+  }
+
   .screen-only .bill-page {
+    transform-origin: top left;
     transform: scale(calc((100vw - 16px) / 718px));
     margin-bottom: calc((1047px * (100vw - 16px) / 718px) - 1047px);
   }
 }
 @media screen and (max-width: 480px) {
   .screen-only .bill-page {
-    transform: scale(calc((100vw - 8px) / 718px));
-    margin-bottom: calc((1047px * (100vw - 8px) / 718px) - 1047px);
+    transform: scale(calc((100vw - 16px) / 718px));
+    margin-bottom: calc((1047px * (100vw - 16px) / 718px) - 1047px);
   }
 }
 

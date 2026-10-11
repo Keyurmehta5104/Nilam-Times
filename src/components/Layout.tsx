@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { FileText, Search, BarChart3, Plus, Menu, X, LogOut, Watch } from "lucide-react";
+import { FileText, Search, BarChart3, Plus, Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -27,16 +27,20 @@ const Layout = ({ children }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-100/70">
       {/* Desktop Navigation */}
       <nav className="no-print hidden xl:block sticky top-0 z-50 shadow-md"
         style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1d4ed8 100%)" }}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                <Watch className="h-4 w-4 text-white" />
-              </div>
+              <img
+                src="/logo.png"
+                alt="Nilam Times"
+                width={36}
+                height={36}
+                className="w-9 h-9 rounded-lg ring-1 ring-[#d4a017]/40 group-hover:ring-[#d4a017] transition-all"
+              />
               <div className="flex flex-col leading-tight">
                 <span className="text-white font-black text-base tracking-widest">NILAM TIMES</span>
                 <span className="text-blue-300 text-[10px] tracking-widest uppercase">Bill Entry System</span>
@@ -54,7 +58,7 @@ const Layout = ({ children }: LayoutProps) => {
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                       isActive
-                        ? "bg-white text-blue-700 shadow-sm"
+                        ? "bg-white text-[#1e3a5f] shadow-sm"
                         : "text-blue-100 hover:bg-white/10 hover:text-white"
                     )}
                   >
@@ -87,7 +91,7 @@ const Layout = ({ children }: LayoutProps) => {
                 {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
               <Link to="/" className="flex items-center gap-2">
-                <Watch className="h-4 w-4 text-blue-300" />
+                <img src="/logo.png" alt="" width={28} height={28} className="w-7 h-7 rounded-md ring-1 ring-[#d4a017]/40" />
                 <span className="text-white font-black tracking-widest text-sm">NILAM TIMES</span>
               </Link>
             </div>
@@ -119,7 +123,7 @@ const Layout = ({ children }: LayoutProps) => {
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-sm font-medium",
                         isActive
-                          ? "bg-white text-blue-700"
+                          ? "bg-white text-[#1e3a5f]"
                           : "text-blue-100 hover:bg-white/10"
                       )}
                     >
@@ -166,16 +170,17 @@ const Layout = ({ children }: LayoutProps) => {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center py-3 text-xs transition-all",
+                  "relative flex flex-col items-center justify-center py-2.5 text-xs transition-all",
                   isActive
-                    ? "text-blue-600"
-                    : "text-slate-400 hover:text-blue-500"
+                    ? "text-[#1e3a5f]"
+                    : "text-slate-400 hover:text-[#1e3a5f]"
                 )}
               >
-                <div className={cn("p-1.5 rounded-lg mb-0.5 transition-all", isActive ? "bg-blue-50" : "")}>
+                {isActive && <span className="absolute top-0 h-0.5 w-10 rounded-full bg-[#1d4ed8]" />}
+                <div className={cn("px-3 py-1 rounded-full mb-0.5 transition-all", isActive ? "bg-blue-100/70" : "")}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[10px] font-medium">{item.label.split(" ")[0]}</span>
+                <span className={cn("text-[10px]", isActive ? "font-bold" : "font-medium")}>{item.label.split(" ")[0]}</span>
               </Link>
             );
           })}

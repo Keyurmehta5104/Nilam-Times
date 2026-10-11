@@ -5,8 +5,9 @@ import { useClients } from "@/hooks/useClients";
 import { useInvoices } from "@/hooks/useInvoices";
 import InvoiceSheet from "@/components/InvoiceSheet";
 import Layout from "@/components/Layout";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, Trash2 } from "lucide-react";
+import PageHeader, { HeaderButton } from "@/components/PageHeader";
+import PageStatus from "@/components/PageStatus";
+import { Save, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { calculateInvoiceTotals, roundMoney } from "@/utils/money";
 import {
@@ -231,7 +232,7 @@ const EditInvoice = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">Loading...</div>
+        <PageStatus loading message="Loading invoice..." />
       </Layout>
     );
   }
@@ -239,51 +240,57 @@ const EditInvoice = () => {
   if (!data) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">Invoice not found</div>
+        <PageStatus message="Invoice not found" onBack={() => navigate("/invoices")} />
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <div className="py-8 px-4">
-        <div className="max-w-4xl mx-auto mb-4 flex justify-between no-print">
-          <Button variant="outline" onClick={() => navigate(-1)} className="gap-2">
-            <ArrowLeft className="h-4 w-4" /> Back
-          </Button>
-          <div className="flex gap-2">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={deleting} className="gap-2">
-                  <Trash2 className="h-4 w-4" /> {deleting ? "Deleting..." : "Delete"}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to delete this invoice? This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            <Button onClick={handleSave} disabled={saving} className="gap-2">
-              <Save className="h-4 w-4" /> {saving ? "Saving..." : "Update Invoice"}
-            </Button>
-          </div>
-        </div>
-
-        <InvoiceSheet
-          data={data}
-          clients={clients}
-          onFieldChange={handleFieldChange}
-          onItemChange={handleItemChange}
-          onTaxChange={handleTaxChange}
+      <div className="py-4 sm:py-6 px-3 sm:px-6">
+        <PageHeader
+          title={`Edit Invoice ${data.invoiceNo ? `#${data.invoiceNo}` : ""}`.trim()}
+          subtitle="Make changes to the bill below, then update"
+          onBack={() => navigate(-1)}
+          actions={
+            <>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <HeaderButton variant="danger" disabled={deleting}>
+                    <Trash2 className="h-4 w-4" /> {deleting ? "Deleting..." : "Delete"}
+                  </HeaderButton>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="rounded-2xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Invoice?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete this invoice. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete} className="rounded-xl bg-red-600 hover:bg-red-700">
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <HeaderButton variant="solid" onClick={handleSave} disabled={saving}>
+                <Save className="h-4 w-4" /> {saving ? "Saving..." : <><span className="sm:hidden">Update</span><span className="hidden sm:inline">Update Invoice</span></>}
+              </HeaderButton>
+            </>
+          }
         />
+
+        <div className="max-w-6xl mx-auto overflow-x-auto pb-2">
+          <InvoiceSheet
+            data={data}
+            clients={clients}
+            onFieldChange={handleFieldChange}
+            onItemChange={handleItemChange}
+            onTaxChange={handleTaxChange}
+          />
+        </div>
       </div>
     </Layout>
   );

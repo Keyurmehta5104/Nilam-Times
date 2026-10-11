@@ -2,10 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useInvoices } from "@/hooks/useInvoices";
 import { InvoiceData } from "@/types/invoice";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Pencil, Printer } from "lucide-react";
+import { Pencil, Printer } from "lucide-react";
+import { format } from "date-fns";
 import InvoiceSheet from "@/components/InvoiceSheet";
+import Layout from "@/components/Layout";
+import PageHeader, { HeaderButton } from "@/components/PageHeader";
+import PageStatus from "@/components/PageStatus";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+const formatInvoiceDate = (value: string) => {
+  const date = new Date(value);
+  return value && !isNaN(date.getTime()) ? format(date, "dd MMM yyyy") : "";
+};
 
 const ViewInvoice = () => {
   const { id } = useParams();
@@ -118,50 +126,52 @@ const ViewInvoice = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted flex items-center justify-center">
-        <div>Loading invoice...</div>
-      </div>
+      <Layout>
+        <PageStatus loading message="Loading invoice..." />
+      </Layout>
     );
   }
 
   if (!invoiceData) {
     return (
-      <div className="min-h-screen bg-muted flex items-center justify-center">
-        <div>Invoice not found</div>
-      </div>
+      <Layout>
+        <PageStatus message="Invoice not found" onBack={() => navigate("/invoices")} />
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted py-4 sm:py-8 px-3 sm:px-4 pb-20 lg:pb-8 print-page-wrap">
-      <div className="max-w-6xl mx-auto mb-4 flex flex-col sm:flex-row sm:justify-between gap-3 no-print">
-        <Button variant="outline" onClick={() => navigate(-1)} className="gap-2 w-full sm:w-auto">
-          <ArrowLeft className="h-4 w-4" /> Back
-        </Button>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Button variant="outline" onClick={() => navigate(`/invoice/${id}/edit`)} className="gap-2 w-full sm:w-auto">
-            <Pencil className="h-4 w-4" /> Edit
-          </Button>
-          <Button onClick={handlePrint} disabled={isPrinting} className="gap-2 w-full sm:w-auto">
-            <Printer className="h-4 w-4" /> {isPrinting ? "Printing..." : "Print Invoice"}
-          </Button>
-        </div>
-      </div>
+    <Layout>
+      <div className="py-4 sm:py-6 px-2 sm:px-6 print-page-wrap">
+        <PageHeader
+          title={`Invoice ${invoiceData.invoiceNo ? `#${invoiceData.invoiceNo}` : ""}`.trim()}
+          subtitle={[invoiceData.customerName, formatInvoiceDate(invoiceData.invoiceDate)].filter(Boolean).join(" · ")}
+          onBack={() => navigate(-1)}
+          actions={
+            <>
+              <HeaderButton onClick={() => navigate(`/invoice/${id}/edit`)}>
+                <Pencil className="h-4 w-4" /> Edit
+              </HeaderButton>
+              <HeaderButton variant="solid" onClick={handlePrint} disabled={isPrinting}>
+                <Printer className="h-4 w-4" /> {isPrinting ? "Printing..." : <><span className="sm:hidden">Print</span><span className="hidden sm:inline">Print Invoice</span></>}
+              </HeaderButton>
+            </>
+          }
+        />
 
-      <div className="screen-only w-full max-w-6xl mx-auto overflow-x-auto pb-6">
-        <div style={{ minWidth: "210mm", margin: "0 auto" }}>
+        <div className="screen-only bill-screen-wrap w-full max-w-6xl mx-auto overflow-x-auto pb-2">
           <InvoiceSheet data={invoiceData} readOnly />
         </div>
-      </div>
 
-      <div className="print-only">
-        {printCopies.map((copyType) => (
-          <div key={copyType} className="print-copy">
-            <InvoiceSheet data={invoiceData} copyType={copyType} className="min-w-0" readOnly />
-          </div>
-        ))}
+        <div className="print-only">
+          {printCopies.map((copyType) => (
+            <div key={copyType} className="print-copy">
+              <InvoiceSheet data={invoiceData} copyType={copyType} className="min-w-0" readOnly />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
