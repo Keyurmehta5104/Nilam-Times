@@ -30,7 +30,7 @@
     --font-body: 'Roboto', sans-serif;
 
     /* Single source of truth for all bill borders */
-    --bill-border: 0.3mm solid #000;
+    --bill-border: 1px solid #000;
   }
 
   .dark {
@@ -331,14 +331,15 @@
 }
 
 .bill-page {
+  position: relative;
   --bill-header-height: 22mm;
   --bill-details-height: 39mm;
   --bill-summary-height: 33mm;
   --bill-footer-height: 22mm;
-  width: 190mm;
-  height: 277mm;
-  min-height: 277mm;
-  max-height: 277mm;
+  width: 718px;
+  height: 1047px;
+  min-height: 1047px;
+  max-height: 1047px;
   margin: 0 auto;
   padding: 0;
   background: #fff;
@@ -354,22 +355,35 @@
 @media screen and (max-width: 740px) {
   .screen-only .bill-page {
     transform: scale(calc((100vw - 16px) / 718px));
-    margin-bottom: calc((277mm * (100vw - 16px) / 718px) - 277mm);
+    margin-bottom: calc((1047px * (100vw - 16px) / 718px) - 1047px);
   }
 }
 @media screen and (max-width: 480px) {
   .screen-only .bill-page {
     transform: scale(calc((100vw - 8px) / 718px));
-    margin-bottom: calc((277mm * (100vw - 8px) / 718px) - 277mm);
+    margin-bottom: calc((1047px * (100vw - 8px) / 718px) - 1047px);
   }
 }
 
-/* Outer border — same weight as all internal borders */
+/* Outer frame drawn as a top layer: the section backgrounds paint after a normal
+   border and, when Chrome scales the page down (print preview / PDF), their edges
+   cover the thin frame line on some sides. The real border is kept transparent
+   only to reserve the same 1px of space. */
+.bill-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* 2px so it never drops below one device pixel when the page is scaled down */
+  border: 2px solid #000;
+  pointer-events: none;
+  z-index: 5;
+}
+
 .bill-page-inner {
-  width: 190mm;
-  height: 277mm;
+  width: 718px;
+  height: 1047px;
   margin: 0 auto;
-  border: 0.3mm solid #000;
+  border: 1px solid transparent;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -393,7 +407,7 @@
   line-height: 1;
   padding: 3mm 3mm 2mm;
   background: #d8d8d8;
-  border-bottom: 0.3mm solid #000;
+  border-bottom: 1px solid #000;
   letter-spacing: 1px;
 }
 
@@ -404,7 +418,7 @@
   line-height: 1.3;
   padding: 1.5mm 3mm;
   background: #fff;
-  border-bottom: 0.3mm solid #000;
+  border-bottom: 1px solid #000;
 }
 
 /* Debit Memo / TAX INVOICE / Original strip */
@@ -412,7 +426,7 @@
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  border-bottom: 0.3mm solid #000;
+  border-bottom: 1px solid #000;
 }
 
 .bill-title-strip-table td {
@@ -464,8 +478,23 @@
 .bill-details-table td,
 .bill-summary-table td,
 .bill-footer-table td {
-  border: 0.3mm solid #000;
+  border: 1px solid #000;
   vertical-align: top;
+}
+
+/* Details box sits inside the outer frame, under the title strip and above the
+   items section — those already draw the edges, so only keep the middle divider */
+.bill-details-table>tbody>tr>td {
+  border-top: none;
+  border-bottom: none;
+}
+
+.bill-details-table>tbody>tr>td:first-child {
+  border-left: none;
+}
+
+.bill-details-table>tbody>tr>td:last-child {
+  border-right: none;
 }
 
 .bill-details-table>tbody>tr>td,
@@ -629,11 +658,21 @@
 
 /* ── ITEMS ── */
 /* Top/bottom borders: same 0.3mm */
+/* Only the items area may shrink; header, details and summary keep their full height */
+.bill-page-inner > * {
+  flex-shrink: 0;
+}
+
+.bill-page-inner > .bill-items-section {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
 .bill-items-section {
   flex: 1 1 auto;
   overflow: hidden;
-  border-top: 0.3mm solid #000;
-  border-bottom: 0.3mm solid #000;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
 }
 
 .bill-items-table {
@@ -651,7 +690,7 @@
   vertical-align: middle;
   background: #fff;
   border: none;
-  border-bottom: 0.3mm solid #000;
+  border-bottom: 1px solid #000;
   padding: 1.2mm 1mm;
 }
 
@@ -690,11 +729,31 @@
   border: none !important;
 }
 
+/* Totals strip below the items: split matches the summary section so the divider lines up */
+.bill-items-total {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+.bill-items-total > div {
+  display: flex;
+  align-items: center;
+  min-height: 6mm;
+  padding-top: 0.6mm;
+  padding-bottom: 0.6mm;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bill-items-total-label {
+  justify-content: flex-end;
+}
+
 /* ── SUMMARY ── */
 /* Top border: same 0.3mm */
 .bill-bottom-section-v2 {
   width: 100%;
-  border-top: 0.3mm solid #000;
+  border-top: 1px solid #000;
 }
 
 .bill-row-split {
@@ -782,21 +841,25 @@
 }
 
 .border-t-black {
-  border-top: 0.3mm solid #000 !important;
+  border-top: 1px solid #000 !important;
 }
 
 .border-b-black {
-  border-bottom: 0.3mm solid #000 !important;
+  border-bottom: 1px solid #000 !important;
 }
 
 .border-r-black {
-  border-right: 0.3mm solid #000 !important;
+  border-right: 1px solid #000 !important;
 }
 
 /* ── PRINT ── */
+/* The white border around the bill comes from the page margins (≈10mm), not from
+   padding inside the page. The printable area left over (718.7 × 1050.5px) fits the
+   718 × 1047px bill exactly, so nothing can be pushed past the paper edge. Whole-px
+   margins keep the bill's 1px lines on exact pixels. Use "Margins: Default". */
 @page {
   size: A4 portrait;
-  margin: 0;
+  margin: 36px 38px 36px 37px;
 }
 
 @media print {
@@ -834,6 +897,13 @@
     display: none !important;
   }
 
+  /* Layout adds bottom padding for the mobile nav below 1280px — an A4 page
+     counts as "narrow", so without this it spills onto an extra blank page */
+  main {
+    padding-bottom: 0 !important;
+    min-height: 0 !important;
+  }
+
   .print-page-wrap {
     display: block !important;
     width: 100% !important;
@@ -856,17 +926,17 @@
    * fits exactly and the bill appears at full size with ~10 mm margins all around.
    */
   .print-only .print-copy {
-    width: 210mm !important;
-    height: 297mm !important;
-    min-height: 297mm !important;
-    max-height: 297mm !important;
+    /* Exactly the bill's size; fits inside the printable area left by @page margins */
+    width: 718px !important;
+    height: 1048px !important;
+    min-height: 1048px !important;
+    max-height: 1048px !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    /* No clipping: a clip edge on top of the frame line can hide it */
+    overflow: visible !important;
     background: #fff !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: block !important;
     page-break-after: always !important;
     break-after: page !important;
     page-break-inside: avoid !important;
@@ -879,11 +949,13 @@
     break-after: auto !important;
   }
 
+  /* Bill is 190 × 277 mm, centred on A4 → 10mm margin on every side,
+     outside the unprintable edge area of normal printers */
   .bill-page {
-    width: 210mm !important;
-    height: 297mm !important;
-    min-height: 297mm !important;
-    max-height: 297mm !important;
+    width: 718px !important;
+    height: 1047px !important;
+    min-height: 1047px !important;
+    max-height: 1047px !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
@@ -905,6 +977,7 @@
    * and page-break-after:always handles pagination cleanly.
    */
   html.ios-device .print-only .print-copy {
+    padding: 0 !important;
     height: auto !important;
     min-height: unset !important;
     max-height: none !important;
@@ -919,10 +992,10 @@
   }
 
   .bill-page-inner {
-    width: 210mm !important;
-    height: 297mm !important;
+    width: 718px !important;
+    height: 1047px !important;
     margin: 0 !important;
-    border: 0.3mm solid #000 !important;
+    border: 1px solid transparent !important;
   }
 
   /* Preserve backgrounds in print */
@@ -1001,6 +1074,10 @@
     border: none !important;
   }
 
+  .bill-items-total > div {
+    min-height: 6.5mm !important;
+  }
+
   .bill-sign-space-v2 {
     height: 8mm !important;
   }
@@ -1014,15 +1091,15 @@
 }
 
 .border-b-bold {
-  border-bottom: 0.4mm solid #000 !important;
+  border-bottom: 2px solid #000 !important;
 }
 
 .border-all {
-  border: 0.2mm solid #000 !important;
+  border: 1px solid #000 !important;
 }
 
 .border-b-thin {
-  border-bottom: 0.3mm solid #000 !important;
+  border-bottom: 1px solid #000 !important;
 }
 
 .center {
@@ -1038,13 +1115,13 @@
 }
 
 .border-left {
-  border-left: 0.3mm solid #000 !important;
+  border-left: 1px solid #000 !important;
 }
 
 .border-right {
-  border-right: 0.3mm solid #000 !important;
+  border-right: 1px solid #000 !important;
 }
 
 .border-top-thin {
-  border-top: 0.3mm solid #000 !important;
+  border-top: 1px solid #000 !important;
 }

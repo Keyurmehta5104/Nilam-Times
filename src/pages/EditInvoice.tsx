@@ -161,6 +161,7 @@ const EditInvoice = () => {
         cgstAmount,
         sgstAmount,
         igstAmount,
+        roundOff,
         grandTotal,
       } = calculateInvoiceTotals({
         subtotal: data.items.reduce((sum, item) => sum + roundMoney(item.amount), 0),
@@ -191,6 +192,7 @@ const EditInvoice = () => {
         cgst_amount: cgstAmount,
         sgst_amount: sgstAmount,
         igst_amount: igstAmount,
+        round_off: roundOff,
         grand_total: grandTotal,
       };
 

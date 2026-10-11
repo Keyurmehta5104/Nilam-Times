@@ -4,6 +4,7 @@ import {
   calculateInvoiceTotals,
   formatMoney,
   formatQuantity,
+  formatRoundOff,
   roundMoney,
 } from "@/utils/money";
 
@@ -83,12 +84,17 @@ const InvoiceSheet = ({
     0
   );
 
+  const totalQty = data.items
+    .filter(isFilledItem)
+    .reduce((sum, item) => sum + (item.qty || 0), 0);
+
   const {
     subtotal,
     cgstAmount,
     sgstAmount,
     igstAmount,
     totalGstAmount,
+    roundOff,
     grandTotal,
   } = calculateInvoiceTotals({
     subtotal: subtotalBase,
@@ -602,7 +608,7 @@ const InvoiceSheet = ({
 
               {readOnly ? (
                 <tr className="bill-item-filler">
-                  <td className="border-right" /><td className="border-right" /><td className="border-right" /><td className="border-right" /><td className="border-right" /><td className="border-right" /><td className="border-right" /><td />
+                  <td /><td /><td /><td /><td /><td /><td /><td />
                 </tr>
               ) : (
                 Array.from({ length: blankRows }).map((_, index) => (
@@ -620,6 +626,16 @@ const InvoiceSheet = ({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Totals strip: kept outside the clipped items area so it is always visible */}
+        <div className="bill-row-split bill-items-total">
+          <div className="bill-col-left border-r-black bill-items-total-label">
+            Total Qty
+          </div>
+          <div className="bill-col-right">
+            {totalQty > 0 ? formatQuantity(totalQty) : " "}
+          </div>
         </div>
 
         <div className="bill-bottom-section-v2">
@@ -678,6 +694,10 @@ const InvoiceSheet = ({
                 <span className="label">IGST</span>
                 <span className="percent">{renderTaxPercent("igstPercent", data.igstPercent)}</span>
                 <span className="amount">{igstAmount > 0 ? formatMoney(igstAmount) : "\u00A0"}</span>
+              </div>
+              <div className="flex-between font-size-10">
+                <span className="strong">Round Off</span>
+                <span>{subtotal > 0 ? formatRoundOff(roundOff) : "\u00A0"}</span>
               </div>
             </div>
           </div>

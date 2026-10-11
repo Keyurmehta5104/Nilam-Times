@@ -13,6 +13,12 @@ export const formatMoney = (value: number): string => {
   });
 };
 
+export const formatRoundOff = (value: number): string => {
+  const rounded = roundMoney(value);
+  const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
+  return `${sign}${formatMoney(Math.abs(rounded))}`;
+};
+
 export const formatQuantity = (value: number): string => {
   return Number(value.toFixed(3)).toString();
 };
@@ -28,7 +34,10 @@ export const calculateInvoiceTotals = (params: {
   const sgstAmount = roundMoney((subtotal * params.sgstPercent) / 100);
   const igstAmount = roundMoney((subtotal * params.igstPercent) / 100);
   const totalGstAmount = roundMoney(cgstAmount + sgstAmount + igstAmount);
-  const grandTotal = roundMoney(subtotal + totalGstAmount);
+  const exactTotal = roundMoney(subtotal + totalGstAmount);
+  // Round the bill to the nearest rupee; roundOff is the +/- adjustment shown on the bill
+  const grandTotal = Math.round(exactTotal);
+  const roundOff = roundMoney(grandTotal - exactTotal);
 
   return {
     subtotal,
@@ -36,6 +45,7 @@ export const calculateInvoiceTotals = (params: {
     sgstAmount,
     igstAmount,
     totalGstAmount,
+    roundOff,
     grandTotal,
   };
 };
